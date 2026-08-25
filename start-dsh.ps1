@@ -57,11 +57,12 @@ Write-Host "[dsh-start] 启动 DSH Web (端口 $Port)"
 Write-Host "[dsh-start] 使用: $dshCmd"
 
 # 3) 后台启动服务（直接 Start-Process dsh.cmd，窗口最小化驻留）
+#    --no-open: 禁止 dsh 自己开浏览器，统一由脚本第 4 步打开，避免开两次
 #    日志用 -RedirectStandardOutput/-RedirectStandardError 捕获，
 #    不要用 cmd /c 加重定向符（嵌套引号会被 cmd 拆碎导致服务未启动）
 $outLog = Join-Path $PSScriptRoot "dsh-web.out.log"
 $errLog = Join-Path $PSScriptRoot "dsh-web.err.log"
-Start-Process -FilePath $dshCmd -ArgumentList @("web", "--port", "$Port") -WindowStyle Minimized `
+Start-Process -FilePath $dshCmd -ArgumentList @("web", "--port", "$Port", "--no-open") -WindowStyle Minimized `
     -RedirectStandardOutput $outLog -RedirectStandardError $errLog
 
 # 4) 等待端口就绪后打开浏览器
